@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Filas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #fila {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            min-height: 50px;
+        }
+        #fila span {
+            display: block;
+            padding: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+        #fila span:last-child {
+            border-bottom: none;
+        }
+        #addName {
+            display: inline-block;
+            margin-right: 10px;
+        }
+        #addName input[type="text"] {
+            width: 200px;
+            padding: 5px;
+        }
+        #finalizarInput, #atualizarFila {
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        #atualizarFila {
+            margin-left: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Gerador de Filas</h1>
+    <div id="addName">
+        <input type="text" id="nome" placeholder="Digite um nome">
+        <button onclick="adicionarNome()">Adicionar Nome</button>
+    </div>
+    <button id="finalizarInput" onclick="finalizarInput()">Finalizar Input de Nomes</button>
+    <button id="atualizarFila" onclick="atualizarFila()">Atualizar Fila</button>
+
+    <div id="fila">
+        <!-- A fila será exibida aqui -->
+    </div>
+
+    <script>
+        let fila = [];
+
+        function adicionarNome() {
+            const nomeInput = document.getElementById('nome');
+            const nome = nomeInput.value.trim();
+
+            if (nome) {
+                fila.push(nome);
+                nomeInput.value = '';
+                atualizarExibicaoFila();
+            } else {
+                alert('Por favor, digite um nome.');
+            }
+        }
+
+        function atualizarExibicaoFila() {
+            const filaDiv = document.getElementById('fila');
+            filaDiv.innerHTML = ''; // Limpa a fila atual
+
+            fila.forEach((nome, index) => {
+                const nomeSpan = document.createElement('span');
+                nomeSpan.textContent = `${index + 1}. ${nome}`;
+                filaDiv.appendChild(nomeSpan);
+            });
+        }
+
+        function finalizarInput() {
+            if (fila.length === 0) {
+                alert('Adicione pelo menos um nome antes de finalizar.');
+                return;
+            }
+
+            document.getElementById('addName').style.display = 'none';
+            document.getElementById('finalizarInput').style.display = 'none';
+            document.getElementById('atualizarFila').style.display = 'inline-block';
+        }
+
+        function atualizarFila() {
+            if (fila.length > 1) {
+                const primeiroNome = fila.shift(); // Remove o primeiro nome da fila
+                fila.push(primeiroNome); // Adiciona o primeiro nome ao final da fila
+                atualizarExibicaoFila();
+                enviarFilaParaWhatsApp();
+            } else {
+                alert('A fila precisa de pelo menos dois nomes para atualizar.');
+            }
+        }
+
+        function enviarFilaParaWhatsApp() {
+            const mensagem = fila.map((nome, index) => `${index + 1}. ${nome}`).join('%0A');
+            const url = `https://wa.me/5511962218067?text=${mensagem}`;
+            window.open(url, '_blank');
+        }
+    </script>
+
+</body>
+</html>
